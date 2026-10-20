@@ -173,6 +173,31 @@
         $('cBack').onclick = function () { show('choose'); };
         $('cRetry').onclick = connect;
 
+        // >>> signature check
+        // Public key (ECDSA P-256, base64). The private key stays on the server owner's PC and signs each published address.
+        var PUBKEY = 'BDaxts2SFwwmMTfTJPB+t5+6bccv0oFAsdQ8FEO4Fe5OT6BAUAle52y/c6yBsnVMwUkEIWBrEacnAfEx4htGwhE=';
+        function b64(s) {
+            s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '=';
+            var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a;
+        }
+        var keyPromise = null;
+        function getKey() {
+            if (!keyPromise) keyPromise = crypto.subtle.importKey('raw', b64(PUBKEY), { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']);
+            return keyPromise;
+        }
+        // Message format: <tunnel address>|<unix time>|<signature>. Returns the address if valid and recent, otherwise ''.
+        function verifyMsg(gameId, t) {
+            var p = t.split('|');
+            if (p.length !== 3) return Promise.resolve('');
+            var url = p[0], ts = parseInt(p[1], 10);
+            if (!/^https:\/\/[a-z0-9-]+\.trycloudflare\.com\/?$/i.test(url)) return Promise.resolve('');
+            if (!(ts > 0) || Math.abs(Date.now() / 1000 - ts) > 86400) return Promise.resolve('');
+            var data = new TextEncoder().encode(gameId + '|' + url + '|' + p[1]);
+            return Promise.resolve().then(getKey).then(function (k) {
+                return crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, k, b64(p[2]), data);
+            }).then(function (ok) { return ok ? url : ''; }).catch(function () { return ''; });
+        }
+        // <<< signature check
         function openGame(server) {
             var url = server.replace(/\/+$/, '') + '/?modo=app&calidad=' + encodeURIComponent(get('calidad', 'normal')) + '&motor=' + encodeURIComponent(get('motor', 'compatible'));
             $('cTitle').textContent = '¡Entrando!';
@@ -193,15 +218,22 @@
             var timer = setTimeout(function () { if (!done) { done = true; useLast(); } }, 10000);
             fetch(NTFY + g.channel + '/json?poll=1&since=12h', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (text) {
                 if (done) return; done = true; clearTimeout(timer);
-                var found = '';
+                // Only signed addresses are accepted: nobody but the server owner can send players to another page
+                var cands = [], gid = game;
                 text.split(/\r?\n/).forEach(function (line) {
-                    try { var m = JSON.parse(line); var t = String(m.message || '').trim(); if (m.event === 'message' && /^https:\/\/[a-z0-9-]+\.trycloudflare\.com\/?$/i.test(t)) found = t; /* only tunnel addresses: nobody can send players to another page */ } catch (e) {}
+                    try { var m = JSON.parse(line); if (m.event === 'message') cands.push(String(m.message || '').trim()); } catch (e) {}
                 });
-                if (found) { put('ultima_' + game, found); openGame(found); } else useLast();
+                cands = cands.slice(-20);
+                (function next(i) {
+                    if (i < 0) { useLast(); return; }
+                    verifyMsg(gid, cands[i]).then(function (u) {
+                        if (u) { put('ultima2_' + gid, u); openGame(u); } else next(i - 1);
+                    });
+                })(cands.length - 1);
             }).catch(function () { if (!done) { done = true; clearTimeout(timer); useLast(); } });
         }
         function useLast() {
-            var last = get('ultima_' + game, '');
+            var last = get('ultima2_' + game, '');
             if (last) openGame(last);
             else fail('El servidor de ' + GAMES[game].name + ' no está encendido en este momento. Vuelve a intentarlo en unos minutos.');
         }
