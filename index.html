@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>Social Wars y Social Empires</title>
+    <!-- iPhone / iPad: "Añadir a pantalla de inicio" -> icon and full screen like an app -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SW y SE">
+    <meta name="theme-color" content="#0e1520">
+    <link rel="apple-touch-icon" href="icon-180.png">
+    <link rel="icon" href="icon-192.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <style>
+        @font-face { font-family: "SWKomika"; src: url("komika.woff") format("woff"); }
+        :root { --bg: #0e1520; --card: #1c283b; --line: #2c3b55; --text: #e8edf5; --muted: #9aa8bd; --orange: #ff8a00; --green: #59d36f; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { margin: 0; min-height: 100%; background: radial-gradient(ellipse at 30% 20%, #1d3557 0%, var(--bg) 60%) fixed; color: var(--text);
+                     font-family: -apple-system, "SF Pro Text", Roboto, Arial, sans-serif; overflow-x: hidden; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: safe center; min-height: 100vh;
+               padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+        .hidden { display: none !important; }
+        .screen { width: 100%; max-width: 860px; display: flex; flex-direction: column; align-items: center; }
+        .title { font-family: "SWKomika", "Arial Black", sans-serif; font-size: 22px; color: #ffc23d; text-shadow: 0 3px 0 #5a2a00; margin: 0 0 12px; text-align: center; }
+        .games { display: flex; gap: 16px; width: 100%; justify-content: center; }
+        .game { flex: 1 1 0; max-width: 400px; border: 2px solid var(--line); border-radius: 16px; padding: 12px; cursor: pointer;
+                display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .game:active { transform: scale(.97); }
+        .game.wars { background: linear-gradient(180deg, #1c2f4d, #142034); }
+        .game.empires { background: linear-gradient(180deg, #2c3a14, #1c2610); border-color: #4b5f26; }
+        .game img { height: 22vh; max-height: 130px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,.6)); }
+        .game .play { width: 100%; border: 0; border-radius: 10px; padding: 10px; font-family: "SWKomika", "Arial Black", sans-serif; font-size: 21px;
+                      color: #fff; background: var(--orange); box-shadow: 0 4px 0 #b55d00; pointer-events: none; }
+        .game.empires .play { background: #4caf37; box-shadow: 0 4px 0 #2e7a20; }
+        .game .addr { font-size: 12px; color: var(--muted); text-decoration: underline; padding: 2px 8px; }
+        .opt { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; color: var(--muted); flex-wrap: wrap; justify-content: center; }
+        .opt button { border: 2px solid var(--line); background: #0f1724; color: var(--text); border-radius: 22px; padding: 9px 20px; min-height: 42px;
+                      font-size: 15px; font-weight: bold; touch-action: manipulation; }
+        .opt button.on { background: var(--orange); border-color: var(--orange); color: #fff; }
+        .opt small { width: 100%; text-align: center; color: #6f7d92; }
+        .install { margin-top: 12px; max-width: 560px; background: #121b29; border: 1px solid #26344b; border-radius: 10px; padding: 10px 14px;
+                   font-size: 13px; line-height: 1.5; color: #c6cfdc; text-align: center; }
+        .install b { color: #ffc23d; }
+        .card { width: 100%; max-width: 480px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+        .card .head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+        .card .head img { height: 48px; }
+        .card h2 { margin: 0; font-family: "SWKomika", "Arial Black", sans-serif; font-weight: normal; font-size: 21px; }
+        .card p { margin: 6px 0 10px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--line); background: #0f1724; color: var(--text); font-size: 17px; }
+        .row { display: flex; gap: 10px; margin-top: 12px; }
+        button.btn { border: 0; border-radius: 8px; padding: 12px 14px; font-weight: bold; font-size: 15px; color: #fff; background: #2b3647; flex: 1; }
+        button.main { background: var(--orange); font-family: "SWKomika", "Arial Black", sans-serif; font-weight: normal; font-size: 20px; }
+        .spinner { width: 34px; height: 34px; border-radius: 50%; border: 4px solid #2c3b55; border-top-color: var(--orange); animation: spin .9s linear infinite; margin: 10px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (orientation: portrait) { .games { flex-direction: column; align-items: center; } .game { width: 100%; } .game img { height: 12vh; } }
+    </style>
+</head>
+<body>
+    <div class="screen" id="choose">
+        <h1 class="title">¿A QUÉ QUIERES JUGAR?</h1>
+        <div class="games">
+            <div class="game wars" data-game="wars">
+                <img src="logo.png" alt="Social Wars">
+                <button class="play" tabindex="-1">SOCIAL WARS</button>
+                <a href="#" class="addr" data-addr="wars">Dirección del servidor</a>
+            </div>
+            <div class="game empires" data-game="empires">
+                <img src="logo_empires.png" alt="Social Empires">
+                <button class="play" tabindex="-1">SOCIAL EMPIRES</button>
+                <a href="#" class="addr" data-addr="empires">Dirección del servidor</a>
+            </div>
+        </div>
+        <div class="opt">Calidad:
+            <button data-quality="baja">Baja</button><button data-quality="normal">Normal</button><button data-quality="alta">Alta</button>
+            <small id="qualityTip"></small>
+        </div>
+        <div class="opt">Motor gráfico:
+            <button data-engine="compatible">Normal</button><button data-engine="vulkan">Metal</button>
+            <small id="engineTip"></small>
+        </div>
+        <div class="install hidden" id="install">
+            Para tenerlo como app: toca <b>Compartir</b> (el cuadrado con la flecha ↑) y luego
+            <b>"Añadir a pantalla de inicio"</b>. Después abre el juego desde ese ícono.
+        </div>
+    </div>
+
+    <div class="screen hidden" id="connect">
+        <div class="card">
+            <div class="head"><img id="cLogo" src="logo.png" alt=""><h2 id="cTitle">Conectando...</h2></div>
+            <div class="spinner" id="spinner"></div>
+            <p id="cText"></p>
+            <div class="row hidden" id="cButtons">
+                <button class="btn" id="cBack">Volver</button>
+                <button class="btn main" id="cRetry">REINTENTAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="screen hidden" id="setup">
+        <div class="card">
+            <div class="head"><img id="sLogo" src="logo.png" alt=""><h2>Servidor</h2></div>
+            <p>Déjalo <b>vacío</b> para la conexión automática (recomendado). Si juegas por una red virtual (Radmin VPN / ZeroTier), escribe la IP, por ejemplo <b>26.123.45.67</b>.</p>
+            <input id="server" type="url" inputmode="url" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Automática">
+            <div class="row">
+                <button class="btn" id="sBack">Volver</button>
+                <button class="btn main" id="sSave">GUARDAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Channels where the servers publish their current address (the tunnel changes it every time)
+        var GAMES = {
+            wars: { name: 'Social Wars', logo: 'logo.png', channel: 'swlatino-ee3c8310ff639e811d70', port: 5055 },
+            empires: { name: 'Social Empires', logo: 'logo_empires.png', channel: 'seempires-05db8b96c03d84b15d9a', port: 5050 }
+        };
+        var NTFY = 'https://ntfy.sh/';
+        function $(id) { return document.getElementById(id); }
+        function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
+        function put(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+        function show(id) { ['choose', 'connect', 'setup'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); }); }
+        var game = get('juego', 'wars');
+
+        // "Add to home screen" hint (only in Safari, not when already opened from the icon)
+        var standalone = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+        if (!standalone && /iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) && 'ontouchend' in document) $('install').classList.remove('hidden');
+
+        // ---------- options ----------
+        var QTIPS = { baja: 'Baja: menos resolución, el juego va más fluido.', normal: 'Normal: equilibrio entre imagen y velocidad.', alta: 'Alta: más nítido (iPhone o iPad nuevos).' };
+        var ETIPS = { compatible: 'Normal: funciona en todos los iPhone y iPad.', vulkan: 'Metal: más rápido en iPhone con iOS 26 o más nuevo. Si se traba o se ve raro, vuelve aquí y elige Normal.' };
+        function paint() {
+            var q = get('calidad', 'normal'), m = get('motor', 'compatible');
+            document.querySelectorAll('[data-quality]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-quality') === q); });
+            document.querySelectorAll('[data-engine]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-engine') === m); });
+            $('qualityTip').textContent = QTIPS[q] || '';
+            $('engineTip').textContent = ETIPS[m] || '';
+        }
+        document.querySelectorAll('[data-quality]').forEach(function (b) { b.onclick = function () { put('calidad', b.getAttribute('data-quality')); paint(); }; });
+        document.querySelectorAll('[data-engine]').forEach(function (b) { b.onclick = function () { put('motor', b.getAttribute('data-engine')); paint(); }; });
+        paint();
+
+        // ---------- server address ----------
+        function normalize(raw, g) {
+            raw = (raw || '').trim().replace(/\/+$/, '');
+            if (!raw) return '';
+            if (!/^https?:\/\//i.test(raw)) {
+                raw = 'http://' + raw;
+                if (!/:\d+$/.test(raw.replace(/^https?:\/\//i, ''))) raw += ':' + GAMES[g].port;
+            }
+            return raw;
+        }
+        document.querySelectorAll('.addr').forEach(function (a) {
+            a.addEventListener('click', function (e) {
+                e.preventDefault(); e.stopPropagation();
+                game = a.getAttribute('data-addr');
+                $('sLogo').src = GAMES[game].logo;
+                $('server').value = get('servidor_' + game, '');
+                show('setup');
+            });
+        });
+        $('sBack').onclick = function () { show('choose'); };
+        $('sSave').onclick = function () { var v = normalize($('server').value, game); put('servidor_' + game, v || null); show('choose'); };
+
+        // ---------- play ----------
+        document.querySelectorAll('.game').forEach(function (el) {
+            el.addEventListener('click', function (e) {
+                if (e.target.classList.contains('addr')) return;
+                game = el.getAttribute('data-game'); put('juego', game); connect();
+            });
+        });
+        $('cBack').onclick = function () { show('choose'); };
+        $('cRetry').onclick = connect;
+
+        function openGame(server) {
+            var url = server.replace(/\/+$/, '') + '/?modo=app&calidad=' + encodeURIComponent(get('calidad', 'normal')) + '&motor=' + encodeURIComponent(get('motor', 'compatible'));
+            $('cTitle').textContent = '¡Entrando!';
+            location.href = url;
+        }
+        function fail(text) {
+            $('spinner').classList.add('hidden'); $('cButtons').classList.remove('hidden');
+            $('cTitle').textContent = 'No se pudo conectar'; $('cText').textContent = text;
+        }
+        function connect() {
+            var g = GAMES[game];
+            show('connect');
+            $('cLogo').src = g.logo; $('cTitle').textContent = 'Conectando...'; $('cText').textContent = g.name;
+            $('spinner').classList.remove('hidden'); $('cButtons').classList.add('hidden');
+            var manual = get('servidor_' + game, '');
+            if (manual) { openGame(manual); return; }
+            var done = false;
+            var timer = setTimeout(function () { if (!done) { done = true; useLast(); } }, 10000);
+            fetch(NTFY + g.channel + '/json?poll=1&since=12h', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (text) {
+                if (done) return; done = true; clearTimeout(timer);
+                var found = '';
+                text.split(/\r?\n/).forEach(function (line) {
+                    try { var m = JSON.parse(line); var t = String(m.message || '').trim(); if (m.event === 'message' && /^https:\/\/[a-z0-9-]+\.trycloudflare\.com\/?$/i.test(t)) found = t; /* only tunnel addresses: nobody can send players to another page */ } catch (e) {}
+                });
+                if (found) { put('ultima_' + game, found); openGame(found); } else useLast();
+            }).catch(function () { if (!done) { done = true; clearTimeout(timer); useLast(); } });
+        }
+        function useLast() {
+            var last = get('ultima_' + game, '');
+            if (last) openGame(last);
+            else fail('El servidor de ' + GAMES[game].name + ' no está encendido en este momento. Vuelve a intentarlo en unos minutos.');
+        }
+    </script>
+</body>
+</html>
