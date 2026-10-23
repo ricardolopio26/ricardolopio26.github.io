@@ -1,242 +1,295 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-    <title>Social Wars y Social Empires</title>
-    <!-- iPhone / iPad: "Añadir a pantalla de inicio" -> icon and full screen like an app -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="SW y SE">
-    <meta name="theme-color" content="#0e1520">
-    <link rel="apple-touch-icon" href="icon-180.png">
-    <link rel="icon" href="icon-192.png">
-    <link rel="manifest" href="manifest.webmanifest">
-    <style>
-        @font-face { font-family: "SWKomika"; src: url("komika.woff") format("woff"); }
-        :root { --bg: #0e1520; --card: #1c283b; --line: #2c3b55; --text: #e8edf5; --muted: #9aa8bd; --orange: #ff8a00; --green: #59d36f; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html, body { margin: 0; min-height: 100%; background: radial-gradient(ellipse at 30% 20%, #1d3557 0%, var(--bg) 60%) fixed; color: var(--text);
-                     font-family: -apple-system, "SF Pro Text", Roboto, Arial, sans-serif; overflow-x: hidden; }
-        body { display: flex; flex-direction: column; align-items: center; justify-content: safe center; min-height: 100vh;
-               padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
-        .hidden { display: none !important; }
-        .screen { width: 100%; max-width: 860px; display: flex; flex-direction: column; align-items: center; }
-        .title { font-family: "SWKomika", "Arial Black", sans-serif; font-size: 22px; color: #ffc23d; text-shadow: 0 3px 0 #5a2a00; margin: 0 0 12px; text-align: center; }
-        .games { display: flex; gap: 16px; width: 100%; justify-content: center; }
-        .game { flex: 1 1 0; max-width: 400px; border: 2px solid var(--line); border-radius: 16px; padding: 12px; cursor: pointer;
-                display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .game:active { transform: scale(.97); }
-        .game.wars { background: linear-gradient(180deg, #1c2f4d, #142034); }
-        .game.empires { background: linear-gradient(180deg, #2c3a14, #1c2610); border-color: #4b5f26; }
-        .game img { height: 22vh; max-height: 130px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,.6)); }
-        .game .play { width: 100%; border: 0; border-radius: 10px; padding: 10px; font-family: "SWKomika", "Arial Black", sans-serif; font-size: 21px;
-                      color: #fff; background: var(--orange); box-shadow: 0 4px 0 #b55d00; pointer-events: none; }
-        .game.empires .play { background: #4caf37; box-shadow: 0 4px 0 #2e7a20; }
-        .game .addr { font-size: 12px; color: var(--muted); text-decoration: underline; padding: 2px 8px; }
-        .opt { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; color: var(--muted); flex-wrap: wrap; justify-content: center; }
-        .opt button { border: 2px solid var(--line); background: #0f1724; color: var(--text); border-radius: 22px; padding: 9px 20px; min-height: 42px;
-                      font-size: 15px; font-weight: bold; touch-action: manipulation; }
-        .opt button.on { background: var(--orange); border-color: var(--orange); color: #fff; }
-        .opt small { width: 100%; text-align: center; color: #6f7d92; }
-        .install { margin-top: 12px; max-width: 560px; background: #121b29; border: 1px solid #26344b; border-radius: 10px; padding: 10px 14px;
-                   font-size: 13px; line-height: 1.5; color: #c6cfdc; text-align: center; }
-        .install b { color: #ffc23d; }
-        .card { width: 100%; max-width: 480px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
-        .card .head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-        .card .head img { height: 48px; }
-        .card h2 { margin: 0; font-family: "SWKomika", "Arial Black", sans-serif; font-weight: normal; font-size: 21px; }
-        .card p { margin: 6px 0 10px; color: var(--muted); font-size: 13px; line-height: 1.45; }
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--line); background: #0f1724; color: var(--text); font-size: 17px; }
-        .row { display: flex; gap: 10px; margin-top: 12px; }
-        button.btn { border: 0; border-radius: 8px; padding: 12px 14px; font-weight: bold; font-size: 15px; color: #fff; background: #2b3647; flex: 1; }
-        button.main { background: var(--orange); font-family: "SWKomika", "Arial Black", sans-serif; font-weight: normal; font-size: 20px; }
-        .spinner { width: 34px; height: 34px; border-radius: 50%; border: 4px solid #2c3b55; border-top-color: var(--orange); animation: spin .9s linear infinite; margin: 10px auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @media (orientation: portrait) { .games { flex-direction: column; align-items: center; } .game { width: 100%; } .game img { height: 12vh; } }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Social Wars y Social Empires</title>
+<!-- iPhone / iPad: "Añadir a pantalla de inicio" -> icon and full screen like an app -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SW y SE">
+<meta name="theme-color" content="#070d18">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root {
+    --ink: #070d18; --deck: #0c1626; --deck2: #112038; --edge: #1d3352; --edge-hi: #2b4c78;
+    --text: #e6f1ff; --muted: #8aa0bd; --hud: #3fe0ff; --hud-dim: rgba(63,224,255,.12);
+    --wars: #ffb020; --empires: #4be08a; --danger: #ff5466;
+    --font: -apple-system, "SF Pro Display", "Bahnschrift", "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; min-height: 100%; color: var(--text); font-family: var(--font); background: var(--ink); overflow-x: hidden; }
+  body {
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    background:
+      linear-gradient(var(--hud-dim) 1px, transparent 1px) 0 0 / 44px 44px,
+      linear-gradient(90deg, var(--hud-dim) 1px, transparent 1px) 0 0 / 44px 44px,
+      radial-gradient(ellipse at 50% 30%, #12284a 0%, var(--ink) 70%) fixed;
+  }
+  /* corner brackets of the screen */
+  body::before, body::after { content: ""; position: fixed; width: 26px; height: 26px; border: 2px solid rgba(63,224,255,.55); pointer-events: none; }
+  body::before { top: max(8px, env(safe-area-inset-top)); left: max(8px, env(safe-area-inset-left)); border-right: 0; border-bottom: 0; }
+  body::after { bottom: max(8px, env(safe-area-inset-bottom)); right: max(8px, env(safe-area-inset-right)); border-left: 0; border-top: 0; }
+  .hidden { display: none !important; }
+  .screen { width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center; }
+  h1 { margin: 0 0 12px; font-size: 19px; font-weight: 600; letter-spacing: .3px; color: var(--muted); text-align: center; }
+  .cut { clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px); }
+
+  /* ---------- game cards ---------- */
+  .games { display: flex; gap: 14px; width: 100%; justify-content: center; }
+  .game { --acc: var(--wars); position: relative; flex: 1 1 0; max-width: 420px; padding: 2px; cursor: pointer; background: var(--edge-hi); border: 0; color: inherit; font: inherit; text-align: center; }
+  .game.empires { --acc: var(--empires); }
+  .game .in { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 12px 12px; background: linear-gradient(160deg, var(--deck2), var(--deck) 70%); height: 100%; }
+  .game::before { content: ""; position: absolute; left: 16px; top: 0; width: 70px; height: 3px; background: var(--acc); box-shadow: 0 0 10px var(--acc); z-index: 2; }
+  .game:active { transform: scale(.975); }
+  .game img.logo { height: 16vh; max-height: 100px; min-height: 54px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 6px 14px rgba(0,0,0,.6)); }
+  .stage { position: relative; width: 100%; height: 84px; display: flex; justify-content: center; align-items: flex-end; gap: 2px; overflow: hidden;
+           background: radial-gradient(ellipse 60% 70% at 50% 100%, rgba(255,255,255,.07), transparent 70%); border-bottom: 1px solid var(--edge); }
+  .dancer { position: relative; transform-origin: 50% 100%; animation: dance 12s ease-in-out infinite; flex: none; }
+  .dancer i { position: absolute; inset: 0; background-repeat: no-repeat; }
+  @keyframes dance {
+    0%, 16%, 40%, 62%, 100% { transform: none; }
+    4%, 12% { transform: translateY(-9px); }
+    8% { transform: none; }
+    20%, 30% { transform: translateX(-8px) rotate(-7deg); }
+    25%, 35% { transform: translateX(8px) rotate(7deg); }
+    44%, 52% { transform: scaleX(-1); }
+    48%, 56% { transform: scaleX(1); }
+    66% { transform: scale(1.08, .82); }
+    71% { transform: translateY(-20px) scale(.95, 1.08); }
+    76% { transform: scale(1.06, .88); }
+    79% { transform: none; }
+    83%, 91% { transform: rotate(-11deg); }
+    87%, 95% { transform: rotate(11deg); }
+  }
+  .play { width: 100%; padding: 11px 10px; font-size: 19px; font-weight: 800; letter-spacing: .5px; color: #08111f; background: var(--acc); pointer-events: none; }
+  .addr { font-size: 12.5px; color: var(--muted); text-decoration: underline; padding: 3px 8px; }
+
+  /* ---------- options (iPhone) ---------- */
+  .opts { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
+  .opt { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); flex-wrap: wrap; justify-content: center; }
+  .opt button { border: 1px solid var(--edge-hi); background: #0a1322; color: var(--text); padding: 9px 16px; min-height: 40px; font: inherit; font-size: 14px; font-weight: 700; touch-action: manipulation; }
+  .opt button.on { background: var(--hud); border-color: var(--hud); color: #08111f; }
+  .tip { width: 100%; text-align: center; color: #6f86a6; font-size: 12px; margin-top: 6px; min-height: 15px; }
+  .install { margin-top: 10px; max-width: 560px; background: rgba(4,9,18,.7); border-left: 2px solid var(--hud); padding: 9px 13px; font-size: 13px; line-height: 1.5; color: #c3d2e6; }
+  .install b { color: var(--text); }
+
+  /* ---------- connecting (radar) / settings ---------- */
+  .radar { position: relative; width: 200px; height: 200px; border-radius: 50%; border: 1px solid var(--edge-hi);
+           background:
+             radial-gradient(circle, transparent 0 34%, var(--hud-dim) 34.5% 35.2%, transparent 35.5% 66%, var(--hud-dim) 66.4% 67%, transparent 67.4%),
+             linear-gradient(var(--hud-dim), var(--hud-dim)) center / 1px 100% no-repeat,
+             linear-gradient(var(--hud-dim), var(--hud-dim)) center / 100% 1px no-repeat; }
+  .radar::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, transparent 0 290deg, var(--sweep, rgba(255,176,32,.5)) 360deg); animation: sweep 2.4s linear infinite; }
+  .radar img { position: absolute; left: 50%; top: 50%; width: 64%; transform: translate(-50%, -50%); filter: drop-shadow(0 6px 16px rgba(0,0,0,.8)); }
+  @keyframes sweep { to { transform: rotate(360deg); } }
+  #cTitle { margin: 16px 0 4px; font-size: 22px; font-weight: 800; color: var(--acc, var(--wars)); }
+  #cText { margin: 0 0 12px; color: var(--muted); font-size: 14px; text-align: center; max-width: 440px; line-height: 1.45; }
+  .card { position: relative; width: 100%; max-width: 480px; padding: 18px 20px; background: linear-gradient(160deg, var(--deck2), var(--deck) 70%); outline: 1px solid var(--edge-hi); }
+  .card::before { content: ""; position: absolute; left: 14px; top: 0; width: 64px; height: 3px; background: var(--hud); }
+  .card h2 { margin: 0 0 6px; font-size: 21px; }
+  .card p { margin: 6px 0 12px; color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+  input { width: 100%; padding: 12px; border: 1px solid var(--edge-hi); background: #060c17; color: var(--text); font-size: 17px; font-family: inherit; }
+  input:focus { outline: none; border-color: var(--hud); box-shadow: 0 0 0 3px var(--hud-dim); }
+  .row { display: flex; gap: 10px; margin-top: 12px; width: 100%; max-width: 480px; }
+  .btn { flex: 1; border: 0; padding: 12px 14px; font: inherit; font-weight: 800; font-size: 15px; color: var(--text); background: #17283f; outline: 1px solid var(--edge-hi); }
+  .btn.main { background: var(--hud); color: #08111f; outline: 0; }
+
+  @media (orientation: portrait) { .games { flex-direction: column; align-items: center; } .game { width: 100%; } .game img.logo { height: 9vh; } }
+  @media (min-height: 700px) and (orientation: landscape) { .stage { height: 130px; } }
+  @media (max-height: 420px) { .stage { height: 70px; } .game img.logo { height: 14vh; min-height: 44px; } h1 { margin-bottom: 8px; } .opts { margin-top: 8px; } }
+  @media (prefers-reduced-motion: reduce) { .dancer, .radar::before { animation: none; } }
+</style>
 </head>
 <body>
-    <div class="screen" id="choose">
-        <h1 class="title">¿A QUÉ QUIERES JUGAR?</h1>
-        <div class="games">
-            <div class="game wars" data-game="wars">
-                <img src="logo.png" alt="Social Wars">
-                <button class="play" tabindex="-1">SOCIAL WARS</button>
-                <a href="#" class="addr" data-addr="wars">Dirección del servidor</a>
-            </div>
-            <div class="game empires" data-game="empires">
-                <img src="logo_empires.png" alt="Social Empires">
-                <button class="play" tabindex="-1">SOCIAL EMPIRES</button>
-                <a href="#" class="addr" data-addr="empires">Dirección del servidor</a>
-            </div>
-        </div>
-        <div class="opt">Calidad:
-            <button data-quality="baja">Baja</button><button data-quality="normal">Normal</button><button data-quality="alta">Alta</button>
-            <small id="qualityTip"></small>
-        </div>
-        <div class="opt">Motor gráfico:
-            <button data-engine="compatible">Normal</button><button data-engine="vulkan">Metal</button>
-            <small id="engineTip"></small>
-        </div>
-        <div class="install hidden" id="install">
-            Para tenerlo como app: toca <b>Compartir</b> (el cuadrado con la flecha ↑) y luego
-            <b>"Añadir a pantalla de inicio"</b>. Después abre el juego desde ese ícono.
-        </div>
+  <div class="screen" id="choose">
+    <h1>¿A qué quieres jugar?</h1>
+    <div class="games">
+      <button class="game wars cut" data-game="wars"><span class="in cut">
+        <img class="logo" src="logo.png" alt="Social Wars">
+        <span class="stage" data-sheet="wars"></span>
+        <span class="play cut">SOCIAL WARS</span>
+        <span class="addr" data-addr="wars">Dirección del servidor</span>
+      </span></button>
+      <button class="game empires cut" data-game="empires"><span class="in cut">
+        <img class="logo" src="logo_empires.png" alt="Social Empires">
+        <span class="stage" data-sheet="empires"></span>
+        <span class="play cut">SOCIAL EMPIRES</span>
+        <span class="addr" data-addr="empires">Dirección del servidor</span>
+      </span></button>
     </div>
-
-    <div class="screen hidden" id="connect">
-        <div class="card">
-            <div class="head"><img id="cLogo" src="logo.png" alt=""><h2 id="cTitle">Conectando...</h2></div>
-            <div class="spinner" id="spinner"></div>
-            <p id="cText"></p>
-            <div class="row hidden" id="cButtons">
-                <button class="btn" id="cBack">Volver</button>
-                <button class="btn main" id="cRetry">REINTENTAR</button>
-            </div>
-        </div>
+    <div class="opts" id="opts">
+      <div class="opt">Calidad <button data-quality="baja" class="cut">Baja</button><button data-quality="normal" class="cut">Normal</button><button data-quality="alta" class="cut">Alta</button></div>
+      <div class="opt">Motor gráfico <button data-engine="compatible" class="cut">Normal</button><button data-engine="vulkan" class="cut">Metal</button></div>
+      <div class="tip" id="tip"></div>
     </div>
-
-    <div class="screen hidden" id="setup">
-        <div class="card">
-            <div class="head"><img id="sLogo" src="logo.png" alt=""><h2>Servidor</h2></div>
-            <p>Déjalo <b>vacío</b> para la conexión automática (recomendado). Si juegas por una red virtual (Radmin VPN / ZeroTier), escribe la IP, por ejemplo <b>26.123.45.67</b>.</p>
-            <input id="server" type="url" inputmode="url" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Automática">
-            <div class="row">
-                <button class="btn" id="sBack">Volver</button>
-                <button class="btn main" id="sSave">GUARDAR</button>
-            </div>
-        </div>
+    <div class="install hidden" id="install">
+      Para tenerlo como app: toca <b>Compartir</b> (el cuadrado con la flecha ↑) y luego
+      <b>"Añadir a pantalla de inicio"</b>. Después abre el juego desde ese ícono.
     </div>
+  </div>
 
-    <script>
-        // Channels where the servers publish their current address (the tunnel changes it every time)
-        var GAMES = {
-            wars: { name: 'Social Wars', logo: 'logo.png', channel: 'swlatino-ee3c8310ff639e811d70', port: 5055 },
-            empires: { name: 'Social Empires', logo: 'logo_empires.png', channel: 'seempires-05db8b96c03d84b15d9a', port: 5050 }
-        };
-        var NTFY = 'https://ntfy.sh/';
-        function $(id) { return document.getElementById(id); }
-        function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
-        function put(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
-        function show(id) { ['choose', 'connect', 'setup'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); }); }
-        var game = get('juego', 'wars');
+  <div class="screen hidden" id="connect">
+    <div class="radar" id="radar"><img id="cLogo" src="logo.png" alt=""></div>
+    <div id="cTitle">Conectando…</div>
+    <p id="cText"></p>
+    <div class="row hidden" id="cButtons">
+      <button class="btn cut" id="cBack">Volver</button>
+      <button class="btn main cut" id="cRetry">Reintentar</button>
+    </div>
+  </div>
 
-        // "Add to home screen" hint (only in Safari, not when already opened from the icon)
-        var standalone = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
-        if (!standalone && /iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) && 'ontouchend' in document) $('install').classList.remove('hidden');
+  <div class="screen hidden" id="setup">
+    <div class="card cut">
+      <h2>Servidor de <span id="sName"></span></h2>
+      <p>Déjalo <b>vacío</b> para la conexión automática (recomendado). Si juegas por una red virtual (Radmin VPN / ZeroTier), escribe la IP, por ejemplo <b>26.123.45.67</b>.</p>
+      <input id="server" type="url" inputmode="url" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Automática">
+    </div>
+    <div class="row">
+      <button class="btn cut" id="sBack">Volver</button>
+      <button class="btn main cut" id="sSave">Guardar</button>
+    </div>
+  </div>
 
-        // ---------- options ----------
-        var QTIPS = { baja: 'Baja: menos resolución, el juego va más fluido.', normal: 'Normal: equilibrio entre imagen y velocidad.', alta: 'Alta: más nítido (iPhone o iPad nuevos).' };
-        var ETIPS = { compatible: 'Normal: funciona en todos los iPhone y iPad.', vulkan: 'Metal: más rápido en iPhone con iOS 26 o más nuevo. Si se traba o se ve raro, vuelve aquí y elige Normal.' };
-        function paint() {
-            var q = get('calidad', 'normal'), m = get('motor', 'compatible');
-            document.querySelectorAll('[data-quality]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-quality') === q); });
-            document.querySelectorAll('[data-engine]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-engine') === m); });
-            $('qualityTip').textContent = QTIPS[q] || '';
-            $('engineTip').textContent = ETIPS[m] || '';
-        }
-        document.querySelectorAll('[data-quality]').forEach(function (b) { b.onclick = function () { put('calidad', b.getAttribute('data-quality')); paint(); }; });
-        document.querySelectorAll('[data-engine]').forEach(function (b) { b.onclick = function () { put('motor', b.getAttribute('data-engine')); paint(); }; });
-        paint();
+<script>
+  // Mac app: this same page opens inside the app window (#mac): no iPhone options
+  var MAC = location.hash.indexOf('mac') >= 0;
+  var GAMES = {
+    wars: { name: 'Social Wars', logo: 'logo.png', channel: 'swlatino-ee3c8310ff639e811d70', port: 5055, domain: 'https://socialwarslatinoamerica.com', color: '#ffb020', sweep: 'rgba(255,176,32,.5)' },
+    empires: { name: 'Social Empires', logo: 'logo_empires.png', channel: 'seempires-05db8b96c03d84b15d9a', port: 5050, domain: 'https://socialempireslatinoamerica.com', color: '#4be08a', sweep: 'rgba(75,224,138,.5)' }
+  };
+  // dancing units of each game (sheets made from the game files, 2x): cell size, frames of each row
+  var SHEETS = {
+    wars: { img: 'baile_sw.png', w: 2016, h: 1180, cw: 144, ch: 236, frames: [12, 12, 14, 12, 12], order: [3, 1, 2, 0, 4] },
+    empires: { img: 'baile_se.png', w: 1944, h: 1220, cw: 162, ch: 244, frames: [12, 12, 10, 12, 12], order: [0, 1, 2, 3, 4] }
+  };
+  var NTFY = 'https://ntfy.sh/';
+  function $(id) { return document.getElementById(id); }
+  function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }
+  function put(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  function show(id) { ['choose', 'connect', 'setup'].forEach(function (s) { $(s).classList.toggle('hidden', s !== id); }); }
+  var game = get('juego', 'wars');
 
-        // ---------- server address ----------
-        function normalize(raw, g) {
-            raw = (raw || '').trim().replace(/\/+$/, '');
-            if (!raw) return '';
-            if (!/^https?:\/\//i.test(raw)) {
-                raw = 'http://' + raw;
-                if (!/:\d+$/.test(raw.replace(/^https?:\/\//i, ''))) raw += ':' + GAMES[g].port;
-            }
-            return raw;
-        }
-        document.querySelectorAll('.addr').forEach(function (a) {
-            a.addEventListener('click', function (e) {
-                e.preventDefault(); e.stopPropagation();
-                game = a.getAttribute('data-addr');
-                $('sLogo').src = GAMES[game].logo;
-                $('server').value = get('servidor_' + game, '');
-                show('setup');
-            });
-        });
-        $('sBack').onclick = function () { show('choose'); };
-        $('sSave').onclick = function () { var v = normalize($('server').value, game); put('servidor_' + game, v || null); show('choose'); };
+  if (MAC) $('opts').classList.add('hidden');
+  var standalone = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+  if (!MAC && !standalone && /iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) && 'ontouchend' in document) $('install').classList.remove('hidden');
 
-        // ---------- play ----------
-        document.querySelectorAll('.game').forEach(function (el) {
-            el.addEventListener('click', function (e) {
-                if (e.target.classList.contains('addr')) return;
-                game = el.getAttribute('data-game'); put('juego', game); connect();
-            });
-        });
-        $('cBack').onclick = function () { show('choose'); };
-        $('cRetry').onclick = connect;
+  // ---------- the dancers ----------
+  var dancers = [];
+  document.querySelectorAll('.stage').forEach(function (st) {
+    var s = SHEETS[st.getAttribute('data-sheet')];
+    var h = st.clientHeight - 6, k = h / s.ch;
+    var count = 3;
+    for (var i = 0; i < count; i++) {
+      var row = s.order[(i + (st.getAttribute('data-sheet') === 'wars' ? 1 : 0)) % s.order.length];
+      var d = document.createElement('span');
+      d.className = 'dancer';
+      d.style.width = Math.round(s.cw * k) + 'px'; d.style.height = Math.round(s.ch * k) + 'px';
+      d.style.animationDelay = (i * 0.15) + 's';
+      var body = document.createElement('i');
+      body.style.backgroundImage = 'url(' + s.img + ')';
+      body.style.backgroundSize = (s.w * k) + 'px ' + (s.h * k) + 'px';
+      d.appendChild(body); st.appendChild(d);
+      dancers.push({ el: body, s: s, k: k, row: row, slot: i });
+    }
+  });
+  var t0 = Date.now();
+  setInterval(function () {
+    var t = Date.now() - t0, loop = Math.floor(t / 12000);
+    dancers.forEach(function (d) {
+      var row = d.s.order[(d.s.order.indexOf(d.row) + loop) % d.s.order.length];   // every 12 s another unit dances
+      var n = d.s.frames[row], f = Math.floor((t % 900) / 900 * n);
+      d.el.style.backgroundPosition = (-f * d.s.cw * d.k) + 'px ' + (-row * d.s.ch * d.k) + 'px';
+    });
+  }, 70);
 
-        // >>> signature check
-        // Public key (ECDSA P-256, base64). The private key stays on the server owner's PC and signs each published address.
-        var PUBKEY = 'BDaxts2SFwwmMTfTJPB+t5+6bccv0oFAsdQ8FEO4Fe5OT6BAUAle52y/c6yBsnVMwUkEIWBrEacnAfEx4htGwhE=';
-        function b64(s) {
-            s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '=';
-            var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a;
-        }
-        var keyPromise = null;
-        function getKey() {
-            if (!keyPromise) keyPromise = crypto.subtle.importKey('raw', b64(PUBKEY), { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']);
-            return keyPromise;
-        }
-        // Message format: <tunnel address>|<unix time>|<signature>. Returns the address if valid and recent, otherwise ''.
-        function verifyMsg(gameId, t) {
-            var p = t.split('|');
-            if (p.length !== 3) return Promise.resolve('');
-            var url = p[0], ts = parseInt(p[1], 10);
-            if (!/^https:\/\/[a-z0-9-]+\.trycloudflare\.com\/?$/i.test(url)) return Promise.resolve('');
-            if (!(ts > 0) || Math.abs(Date.now() / 1000 - ts) > 86400) return Promise.resolve('');
-            var data = new TextEncoder().encode(gameId + '|' + url + '|' + p[1]);
-            return Promise.resolve().then(getKey).then(function (k) {
-                return crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, k, b64(p[2]), data);
-            }).then(function (ok) { return ok ? url : ''; }).catch(function () { return ''; });
-        }
-        // <<< signature check
-        function openGame(server) {
-            var url = server.replace(/\/+$/, '') + '/?modo=app&calidad=' + encodeURIComponent(get('calidad', 'normal')) + '&motor=' + encodeURIComponent(get('motor', 'compatible'));
-            $('cTitle').textContent = '¡Entrando!';
-            location.href = url;
-        }
-        function fail(text) {
-            $('spinner').classList.add('hidden'); $('cButtons').classList.remove('hidden');
-            $('cTitle').textContent = 'No se pudo conectar'; $('cText').textContent = text;
-        }
-        function connect() {
-            var g = GAMES[game];
-            show('connect');
-            $('cLogo').src = g.logo; $('cTitle').textContent = 'Conectando...'; $('cText').textContent = g.name;
-            $('spinner').classList.remove('hidden'); $('cButtons').classList.add('hidden');
-            var manual = get('servidor_' + game, '');
-            if (manual) { openGame(manual); return; }
-            var done = false;
-            var timer = setTimeout(function () { if (!done) { done = true; useLast(); } }, 10000);
-            fetch(NTFY + g.channel + '/json?poll=1&since=12h', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (text) {
-                if (done) return; done = true; clearTimeout(timer);
-                // Only signed addresses are accepted: nobody but the server owner can send players to another page
-                var cands = [], gid = game;
-                text.split(/\r?\n/).forEach(function (line) {
-                    try { var m = JSON.parse(line); if (m.event === 'message') cands.push(String(m.message || '').trim()); } catch (e) {}
-                });
-                cands = cands.slice(-20);
-                (function next(i) {
-                    if (i < 0) { useLast(); return; }
-                    verifyMsg(gid, cands[i]).then(function (u) {
-                        if (u) { put('ultima2_' + gid, u); openGame(u); } else next(i - 1);
-                    });
-                })(cands.length - 1);
-            }).catch(function () { if (!done) { done = true; clearTimeout(timer); useLast(); } });
-        }
-        function useLast() {
-            var last = get('ultima2_' + game, '');
-            if (last) openGame(last);
-            else fail('El servidor de ' + GAMES[game].name + ' no está encendido en este momento. Vuelve a intentarlo en unos minutos.');
-        }
-    </script>
+  // ---------- options (iPhone) ----------
+  var QTIPS = { baja: 'Calidad baja: el juego va más fluido.', normal: 'Calidad normal: equilibrio entre imagen y velocidad.', alta: 'Calidad alta: más nítido (iPhone o iPad nuevos).' };
+  var ETIPS = { compatible: 'Motor normal: funciona en todos los iPhone y iPad.', vulkan: 'Metal: más rápido con iOS 26 o más nuevo; si se traba, vuelve a Normal.' };
+  function paint() {
+    var q = get('calidad', 'normal'), m = get('motor', 'compatible');
+    document.querySelectorAll('[data-quality]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-quality') === q); });
+    document.querySelectorAll('[data-engine]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-engine') === m); });
+    $('tip').textContent = (QTIPS[q] || '') + '  ' + (ETIPS[m] || '');
+  }
+  document.querySelectorAll('[data-quality]').forEach(function (b) { b.onclick = function () { put('calidad', b.getAttribute('data-quality')); paint(); }; });
+  document.querySelectorAll('[data-engine]').forEach(function (b) { b.onclick = function () { put('motor', b.getAttribute('data-engine')); paint(); }; });
+  paint();
+
+  // ---------- server address ----------
+  function normalize(raw, g) {
+    raw = (raw || '').trim().replace(/\/+$/, '');
+    if (!raw) return '';
+    if (!/^https?:\/\//i.test(raw)) {
+      raw = 'http://' + raw;
+      if (!/:\d+$/.test(raw.replace(/^https?:\/\//i, ''))) raw += ':' + GAMES[g].port;
+    }
+    return raw;
+  }
+  document.querySelectorAll('.addr').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      game = a.getAttribute('data-addr');
+      $('sName').textContent = GAMES[game].name;
+      $('server').value = get('servidor_' + game, '');
+      show('setup'); $('server').focus();
+    });
+  });
+  $('sBack').onclick = function () { show('choose'); };
+  $('sSave').onclick = function () { var v = normalize($('server').value, game); put('servidor_' + game, v || null); show('choose'); };
+
+  // ---------- play ----------
+  document.querySelectorAll('.game').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      if (e.target.classList.contains('addr')) return;
+      game = el.getAttribute('data-game'); put('juego', game); connect();
+    });
+  });
+  $('cBack').onclick = function () { show('choose'); };
+  $('cRetry').onclick = connect;
+
+  function openGame(server) {
+    server = server.replace(/\/+$/, '');
+    var url = MAC ? server + '/' : server + '/?modo=app&calidad=' + encodeURIComponent(get('calidad', 'normal')) + '&motor=' + encodeURIComponent(get('motor', 'compatible'));
+    $('cTitle').textContent = '¡Entrando!';
+    location.href = url;
+  }
+  function fail(text) {
+    $('cButtons').classList.remove('hidden');
+    $('cTitle').textContent = 'No se pudo conectar'; $('cText').textContent = text;
+    $('radar').style.setProperty('--sweep', 'rgba(255,84,102,.5)');
+  }
+  function connect() {
+    var g = GAMES[game];
+    show('connect');
+    document.documentElement.style.setProperty('--acc', g.color);
+    $('radar').style.setProperty('--sweep', g.sweep);
+    $('cLogo').src = g.logo; $('cTitle').textContent = 'Conectando…'; $('cText').textContent = 'Buscando el servidor de ' + g.name + '…';
+    $('cButtons').classList.add('hidden');
+    var manual = get('servidor_' + game, '');
+    if (manual) { openGame(manual); return; }
+    var done = false;
+    var timer = setTimeout(function () { if (!done) { done = true; useLast(); } }, 8000);
+    fetch(NTFY + g.channel + '/json?poll=1&since=12h', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (text) {
+      if (done) return; done = true; clearTimeout(timer);
+      var found = '';
+      text.split(/\r?\n/).forEach(function (line) {
+        try { var m = JSON.parse(line); var t = String(m.message || '').trim(); if (m.event === 'message' && /^https?:\/\/\S+$/.test(t)) found = t; } catch (e) {}
+      });
+      if (found) { put('ultima_' + game, found); openGame(found); } else useLast();
+    }).catch(function () { if (!done) { done = true; clearTimeout(timer); useLast(); } });
+  }
+  // no address in the channel: the fixed domain of the game (or the last one that worked)
+  function useLast() {
+    var g = GAMES[game];
+    var last = g.domain || get('ultima_' + game, '');
+    if (last) openGame(last);
+    else fail('El servidor de ' + g.name + ' no está encendido en este momento. Vuelve a intentarlo en unos minutos.');
+  }
+</script>
 </body>
 </html>
